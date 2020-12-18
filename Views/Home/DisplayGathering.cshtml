@@ -1,0 +1,47 @@
+@model Gathering
+
+<a href="/logout" class="btn btn-lg btn-dark mb-5">Logout</a>
+<a href="/dashboard" class="btn btn-lg btn-primary mb-5">Dashboard</a>
+
+<div class="card-header bg-primary text-white">
+    <h3>@Model.Title</h3>
+</div>
+<div class="card-body">
+    <div class="row">
+        <div class="col-sm-8">
+            <h6><b>Location:</b> @Model.Location</h6>
+            <h6><b>Event Coordinator:</b> @Model.Planner.FirstName</h6>
+            <h6><b>Date:</b> @Model.Date.ToString("dddd, MMMM dd yyyy h:mm tt")</h6>
+            <h6><b>Duration:</b> @Model.DurationInt @Model.DurationStr</h6>
+            <h6><b>Description:</b> @Model.Description</h6>
+        </div>
+        <div class="col mt-2 ">
+            @if (ViewBag.User.UserId == Model.Planner.UserId)
+            {
+                <a class="btn btn-warning btn-sm" href="/gathering/@Model.GatheringId/delete">Delete</a>
+            }
+            else
+            {
+                if (Model.Guests.Any(gl => gl.UserId == ViewBag.User.UserId))
+                {
+                    <a class="btn btn-dark btn-sm bg-secondary text-white" asp-action="ToggleStatus"
+                        asp-route-gatheringId="@Model.GatheringId" asp-route-status="leave">Leave</a>
+                }
+                else
+                {
+                    <a class="btn btn-success btn-sm" asp-action="ToggleStatus" asp-route-gatheringId="@Model.GatheringId"
+                        asp-route-status="join">Want to go?</a>
+                }
+            }
+
+            </div>
+            <div class="col-sm-4">
+                <ul class="list-group">
+                    <li class="list-group-item bg-dark text-white">Participants: </li>
+                    @foreach (var g in Model.Guests)
+            {
+                <li class="list-group-item">@g.Participants.FirstName @g.Participants.LastName</li>
+            }
+        </ul>
+    </div>
+</div>
